@@ -1,16 +1,12 @@
 package ZeroCross;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class Game {
-    Player fistPlayer;
+    Player firstPlayer;
     Player secondPlayer;
     String[][] battlefield = new String[3][3];
 
     public Game(Player fistPlayer, Player secondPlayer) {
-        this.fistPlayer = fistPlayer;
+        this.firstPlayer = fistPlayer;
         this.secondPlayer = secondPlayer;
         PrepareTheField();
     }
@@ -20,59 +16,59 @@ public class Game {
         Player firstPlayer = new Player("John", "zero");
         Player secondPlayer = new Player("Kevin", "cross");
         Game game = new Game(firstPlayer, secondPlayer);
-        while (!game.isGameOver()) {
+        boolean flagIsGameOver = false;
+        while (flagIsGameOver==false) {
 
-            game.fistPlayer.makeMove(game.battlefield);
-            if (game.isGameOver()) {
+            game.firstPlayer.makeMove(game.battlefield);
+            flagIsGameOver = game.isGameOver(firstPlayer.figure);
+            if (flagIsGameOver != false) {
                 break;
             } else {
                 game.secondPlayer.makeMove(game.battlefield);
+                flagIsGameOver = game.isGameOver(secondPlayer.figure);
             }
 
         }
     }
 
-    private boolean isGameOver() {
+    private boolean isGameOver(String playerFigure) {
         boolean result = false;
+        int countError = 0;
         if (iStart()) {
             return result;
         }
         for (int i = 0; i < battlefield.length; i++) {
-            boolean isSomeoneWon = true;
-            final String etalonFigure = battlefield[i][0];
             for (int j = 0; j < battlefield[i].length; j++) {
-                if (!etalonFigure.equals(battlefield[i][j])) {
-                    isSomeoneWon = false;
+                if (!playerFigure.equals(battlefield[i][j])) {
+                    countError++;
                     break;
                 }
             }
-            if (isSomeoneWon == true) {
-                return whoIsWinner(battlefield[i][0],true);
-            }
         }
+
         for (int i = 0; i < 3; i++) {
-            boolean isSomeoneWon = true;
-            final String etalonFigure = battlefield[0][i];
             for (int j = 0; j < 3; j++) {
-                if (!etalonFigure.equals(battlefield[j][i])) {
-                    isSomeoneWon = false;
+                if (!playerFigure.equals(battlefield[j][i])) {
+                    countError++;
                     break;
                 }
             }
-            if (isSomeoneWon == true) {
-                return whoIsWinner(battlefield[2][i],true);
-            }
         }
 
-        String etalonValue = battlefield[1][1];
-        boolean isSomeoneWon = false;
-        if ((!etalonValue.trim().equals("")) && etalonValue.equals(battlefield[0][0]) && etalonValue.equals(battlefield[2][2])) {
-            isSomeoneWon = true;
-        } else if ((!etalonValue.trim().equals("")) && etalonValue.equals(battlefield[2][0]) && etalonValue.equals(battlefield[0][2])) {
-            isSomeoneWon = true;
+        if (countError < 6) {
+            System.out.println(countError+"   qqqqq");
+            return whoIsWinner(playerFigure, firstPlayer, secondPlayer);
         }
 
-        return whoIsWinner(etalonValue, isSomeoneWon);
+        if (playerFigure.equals(battlefield[1][1]) && playerFigure.equals(battlefield[0][0]) && playerFigure.equals(battlefield[2][2])) {
+
+            return whoIsWinner(playerFigure, firstPlayer, secondPlayer);
+        } else if (playerFigure.equals(battlefield[1][1]) && playerFigure.equals(battlefield[2][0]) && playerFigure.equals(battlefield[0][2])) {
+
+            return whoIsWinner(playerFigure, firstPlayer, secondPlayer);
+        }
+        return result;
+
     }
 
     private boolean iStart() {
@@ -86,27 +82,38 @@ public class Game {
         return result.toString().trim().length() == 0 ? true : false;
     }
 
-    private boolean whoIsWinner(String etalonCell, boolean flagWinner) {
-        boolean result = true;
-        StringBuilder totalString = new StringBuilder();
-        for (String[] row : battlefield) {
-            for (String cell : row) {
-                totalString = totalString.append(cell);
+//    private boolean whoIsWinner(String etalonCell, boolean flagWinner) {
+//        boolean result = true;
+//        StringBuilder totalString = new StringBuilder();
+//        for (String[] row : battlefield) {
+//            for (String cell : row) {
+//                totalString = totalString.append(cell);
+//            }
+//        }
+//        if (totalString.toString().trim().length() == 0) {
+//            System.out.println("Ничья!!!");
+//            return false;
+//        }
+//        if (flagWinner == true) {
+//            if (firstPlayer.figure.equals(etalonCell.trim())) {
+//                System.out.println("Выиграл : " + firstPlayer.name);
+//            } else {
+//                System.out.println("Выиграл : " + secondPlayer.name);
+//            }
+//            result = false;
+//        }
+//        return result;
+//    }
+
+    private boolean whoIsWinner(String figureWinner, Player... players) {
+        for (int i = 0; i < players.length; i++) {
+            System.out.println(figureWinner);
+            if (figureWinner.equals(players[i])) {
+                System.out.println(players[i].name + " is Winner");
+                break;
             }
         }
-        if (totalString.toString().trim().length() == 0) {
-            System.out.println("Ничья!!!");
-            return false;
-        }
-        if (flagWinner == true) {
-            if (fistPlayer.figure.equals(etalonCell.trim())) {
-                System.out.println("Выиграл : " + fistPlayer.name);
-            } else {
-                System.out.println("Выиграл : " + secondPlayer.name);
-            }
-            result=false;
-        }
-        return result;
+        return true;
     }
 
     public void PrepareTheField() {
