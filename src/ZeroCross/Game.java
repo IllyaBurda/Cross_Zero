@@ -82,33 +82,11 @@ public class Game {
         return result.toString().trim().length() == 0 ? true : false;
     }
 
-//    private boolean whoIsWinner(String etalonCell, boolean flagWinner) {
-//        boolean result = true;
-//        StringBuilder totalString = new StringBuilder();
-//        for (String[] row : battlefield) {
-//            for (String cell : row) {
-//                totalString = totalString.append(cell);
-//            }
-//        }
-//        if (totalString.toString().trim().length() == 0) {
-//            System.out.println("Ничья!!!");
-//            return false;
-//        }
-//        if (flagWinner == true) {
-//            if (firstPlayer.figure.equals(etalonCell.trim())) {
-//                System.out.println("Выиграл : " + firstPlayer.name);
-//            } else {
-//                System.out.println("Выиграл : " + secondPlayer.name);
-//            }
-//            result = false;
-//        }
-//        return result;
-//    }
 
     private boolean whoIsWinner(String figureWinner, Player... players) {
         for (int i = 0; i < players.length; i++) {
             System.out.println(figureWinner);
-            if (figureWinner.equals(players[i])) {
+            if (figureWinner.equals(players[i].figure)) {
                 System.out.println(players[i].name + " is Winner");
                 break;
             }
